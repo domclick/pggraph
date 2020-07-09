@@ -1,4 +1,7 @@
 # PgGraph
+
+[![License: MIT](https://img.shields.io/github/license/domclick/pggraph)](./LICENSE.md)
+
 Утилита для работы с зависимостями таблиц в PostgreSQL
 
 Основной функционал:
@@ -236,6 +239,7 @@ $ pggraph get_rows_references --config_path config.hw.local.ini --table flights 
 - [Borzov Oleg](https://github.com/olegborzov) (Author)
 
 ## License
-2020, Copyright Ⓒ, «Sberbank real estate center» Limited Liability Company.
 
-MIT license.
+Copyright Ⓒ 2020 [Sberbank Real Estate Centre LLC](https://domclick.ru/).
+
+[MIT License](./LICENSE.md)
