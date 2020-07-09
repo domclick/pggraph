@@ -1,8 +1,18 @@
 # Custom
+*.db
+*.DS_Store
+.*
+!.ci-cd
+*.txt
+!requirements.txt
+Dockerfile
+venv*/
+tests/
+*.yml
 *.DS_Store
 *.ini
-!config.test.ini
 .idea/
+
 
 # Archives
 *.tar
@@ -32,7 +42,7 @@ eggs/
 lib/
 lib64/
 parts/
-!*/templates/**/parts/
+!templates/parts/
 sdist/
 var/
 wheels/

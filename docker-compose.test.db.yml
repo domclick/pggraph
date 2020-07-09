@@ -1,0 +1,14 @@
+# Copyright Ⓒ 2020 Sberbank Real Estate Centre LLC. Licensed under the MIT license.
+# Please, see the LICENSE.md file in project's root for full licensing information.
+
+version: "3"
+
+services:
+  test_db:
+    image: postgres:12
+    command:
+      postgres -c max_connections=300
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - 54321:5432
