@@ -8,7 +8,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 
 setup(
-    name="PgGraph",
+    name="pggraph",
     description="Утилита для работы с зависимостями таблиц в PostgreSQL",
     long_description=long_description,
     long_description_content_type='text/markdown',
