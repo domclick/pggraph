@@ -1,3 +1,7 @@
+"""
+Copyright Ⓒ 2020 Sberbank Real Estate Centre LLC. Licensed under the MIT license.
+Please, see the LICENSE.md file in project's root for full licensing information.
+"""
 import logging
 from typing import List
 
