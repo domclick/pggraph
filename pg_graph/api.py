@@ -6,6 +6,7 @@ import logging
 from argparse import Namespace
 from typing import List, Dict
 
+from psycopg2.extras import DictCursor
 from psycopg2.sql import SQL
 
 from pg_graph.db import build_references as br
@@ -132,7 +133,7 @@ class PgGraphApi:
                         f"FROM {self.config.db_config.schema}.{ref_table_name} "
                         f"WHERE {fk.fk_ref} IN ({s_in})"
                     )
-                    with conn.cursor() as curs:
+                    with conn.cursor(cursor_factory=DictCursor) as curs:
                         curs.execute(query, ids)
                         result = curs.fetchall()
                         rows = [dict(row) for row in result]

@@ -7,7 +7,7 @@ from typing import List
 
 from psycopg2._json import Json
 from psycopg2._psycopg import connection
-from psycopg2.extras import execute_values
+from psycopg2.extras import execute_values, DictCursor
 from psycopg2.sql import SQL
 
 from pg_graph.config import Config
@@ -73,7 +73,7 @@ class Archiver:
                     self.archive_by_fk(ref_table, ref_fk, fk_rows=rows)
                     continue
 
-                with self.conn.cursor() as cursor:
+                with self.conn.cursor(cursor_factory=DictCursor) as cursor:
                     self.select_rows_by_fk(cursor, table_name=ref_table, fk=ref_fk, rows=rows, tabs=tabs)
                     ref_rows_chunk = cursor.fetchmany(size=self.config.archiver_config.chunk_size)
                     while ref_rows_chunk:
@@ -104,7 +104,7 @@ class Archiver:
             if self.config.archiver_config.to_archive:
                 archive_table_name = self.create_archive_table(table_name, tabs=tabs)
 
-            with self.conn.cursor() as cursor:
+            with self.conn.cursor(cursor_factory=DictCursor) as cursor:
                 self.delete_rows_by_fk(cursor, table_name=table_name, fk=fk, fk_rows=fk_rows, tabs=tabs)
 
                 if self.config.archiver_config.to_archive:
@@ -135,7 +135,7 @@ class Archiver:
             if self.config.archiver_config.to_archive:
                 archive_table_name = self.create_archive_table(table_name, tabs=tabs)
 
-            with self.conn.cursor() as cursor:
+            with self.conn.cursor(cursor_factory=DictCursor) as cursor:
                 self.delete_rows_by_ids(cursor, table_name=table_name, pk_columns=pk_columns, rows=row_pks, tabs=tabs)
 
                 if self.config.archiver_config.to_archive:
@@ -154,7 +154,7 @@ class Archiver:
             f"(LIKE {self.config.db_config.schema}.{table_name})"
         )
 
-        with self.conn.cursor() as cur:
+        with self.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute(query)
 
         logging.debug(f"{tabs}{query}")
@@ -172,7 +172,7 @@ class Archiver:
                     row[col_name] = Json(col_val)
 
         logging.debug(f"{tabs}INSERT INTO {archive_table_name} - {len(values)} rows")
-        with self.conn.cursor() as cursor:
+        with self.conn.cursor(cursor_factory=DictCursor) as cursor:
             execute_values(cursor, query, values)
 
     def delete_rows_by_fk(self, cursor, table_name: str, fk: ForeignKey, fk_rows: List, tabs: str):

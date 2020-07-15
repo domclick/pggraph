@@ -7,6 +7,7 @@ from collections import OrderedDict
 from typing import Set, Dict, List
 
 from psycopg2._psycopg import connection
+from psycopg2.extras import DictCursor
 
 from pg_graph.config import Config, DBConfig
 from pg_graph.utils.classes.foreign_key import ForeignKey
@@ -132,13 +133,13 @@ def recursive_build(parent_table: str,
 
 
 def get_all_tables(conn, db_config: DBConfig) -> List[dict]:
-    query = "SELECT * FROM information_schema.tables WHERE table_schema = %(schema)s"
+    query = "SELECT * FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = %(schema)s"
 
-    with conn.cursor() as curs:
+    with conn.cursor(cursor_factory=DictCursor) as curs:
         curs.execute(query.strip(), {'schema': db_config.schema})
         result = curs.fetchall()
 
-    base_tables = [dict(row) for row in result if row['table_type'] == 'BASE TABLE']
+    base_tables = [dict(row) for row in result]
     return base_tables
 
 
@@ -212,7 +213,7 @@ def get_all_fk(conn, db_config: DBConfig) -> List[dict]:
         ORDER BY ccu.table_name, tc.table_name;
     """
 
-    with conn.cursor() as curs:
+    with conn.cursor(cursor_factory=DictCursor) as curs:
         curs.execute(query.strip(), {'schema': db_config.schema})
         result = curs.fetchall()
 
