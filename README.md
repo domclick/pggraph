@@ -5,7 +5,8 @@
 Утилита для работы с зависимостями таблиц в PostgreSQL
 
 Основной функционал:
-- Рекурсивное архивирование/удаление строк с указанными Primary Key в данной таблице
+- Рекурсивное удаление и архивация строк в таблице с указанными Primary Key<br>
+*Под архивацией понимается перенос строк в архивную таблицу (например, из "books" в "books_archive")*
 - Поиск зависимостей для указанной таблицы (ссылающиеся таблицы и таблицы на которые ссылается данная)
 - Поиск ссылок на строки с указанными Primary Key данной таблицы
 
@@ -18,14 +19,14 @@ port = 5432
 user = postgres
 password = postgres
 dbname = postgres
-schema = public ; Необязательный параметр, указано значение по умолчанию
+schema = public                 ; Необязательный параметр, указано значение по умолчанию
 
-[archive]       ; Данный раздел заполнять необязательно, ниже указаны значения по умолчанию
-is_debug = false
-chunk_size = 1000
-max_depth = 20
-to_archive = true
-archive_suffix = 'archive'
+[archive]                       ; Данный раздел заполнять необязательно, ниже указаны значения по умолчанию
+is_debug = false                ; Запуск в режиме debug (удаление из таблицы происходить не будет) 
+chunk_size = 1000               ; Кол-во строк, которое архивируется за 1 шаг
+max_depth = 20                  ; Максимальная глубина рекурсии
+to_archive = true               ; Режим архивации (строки из таблицы "a" переносятся в таблицу "a_%archive_suffix%")
+archive_suffix = 'archive'      ; Суффикс архивной таблицы
 ```
 
 ## Структура
@@ -138,7 +139,7 @@ $ pggraph get_rows_references --config_path config.hw.local.ini --table flights 
 >>> from pg_graph.main import setup_logging
 >>> setup_logging(log_level='DEBUG')
 >>> from pg_graph.api import PgGraphApi
->>> api = PgGraphApi('config.hw.local.ini')
+>>> api = PgGraphApi(config_path='config.hw.local.ini')
 >>> api.archive_table('flights', [4,5])
 2020-06-20 23:12:08 INFO: flights - START
 2020-06-20 23:12:08 INFO: flights - start archive_recursive 2 rows (depth=0)
@@ -201,7 +202,7 @@ $ pggraph get_rows_references --config_path config.hw.local.ini --table flights 
 ```python
 >>> from pg_graph.api import PgGraphApi
 >>> from pprint import pprint
->>> api = PgGraphApi('config.hw.local.ini')
+>>> api = PgGraphApi(config_path='config.hw.local.ini')
 >>> res = api.get_table_references('flights')
 >>> pprint(res)
 {'in_refs': {'ticket_flights': [ForeignKey(pk_main='flight_id', pk_ref='flight_id, ticket_no', fk_ref='flight_id')]},
@@ -214,7 +215,7 @@ $ pggraph get_rows_references --config_path config.hw.local.ini --table flights 
 ```python
 >>> from pg_graph.api import PgGraphApi
 >>> from pprint import pprint
->>> api = PgGraphApi('config.hw.local.ini')
+>>> api = PgGraphApi(config_path='config.hw.local.ini')
 >>> rows = api.get_rows_references('flights', [1,2,3])
 >>> pprint(rows)
 {1: {'ticket_flights': {'flight_id': [{'flight_id': 1,

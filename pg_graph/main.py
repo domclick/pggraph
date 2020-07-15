@@ -16,7 +16,7 @@ def main():
     args = parse_args()
     setup_logging(args.log_level, args.log_path)
 
-    pg_graph_api = PgGraphApi(args.config_path)
+    pg_graph_api = PgGraphApi(config_path=args.config_path)
     result = pg_graph_api.run_action(args)
 
     pprint(result)

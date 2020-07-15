@@ -22,8 +22,14 @@ class PgGraphApi:
     references: Dict[str, dict]
     primary_keys: Dict[str, str]
 
-    def __init__(self, config_path: str):
-        self.config = Config(config_path)
+    def __init__(self, config_path: str = None, config: Config = None):
+        if config_path:
+            self.config = Config(config_path)
+        elif config:
+            self.config = config
+        else:
+            raise ValueError('config or config_path should be set')
+
         result = br.build_references(config=self.config)
         self.references = result['references']
         self.primary_keys = result['primary_keys']
@@ -35,6 +41,8 @@ class PgGraphApi:
             return self.get_rows_references(args.table, ids=args.ids)
         elif args.action == ActionEnum.get_table_references:
             return self.get_table_references(args.table)
+        else:
+            raise NotImplementedError(f'Unknown action {args.action}')
 
     def archive_table(self, table_name, ids: List[int]):
         """
