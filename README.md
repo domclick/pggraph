@@ -1,6 +1,6 @@
 # PgGraph
 
-[![PyPI](https://img.shields.io/pypi/v/pggraph.svg)](https://pypi.org/project/pggraph/) ![3.6, 3.7, 3.8](https://img.shields.io/pypi/pyversions/pggraph.svg) [![License: MIT](https://img.shields.io/github/license/domclick/pggraph)](https://github.com/domclick/pggraph/blob/master/README.md)
+[![PyPI](https://img.shields.io/pypi/v/pggraph.svg)](https://pypi.org/project/pggraph/) ![3.6, 3.7, 3.8](https://img.shields.io/pypi/pyversions/pggraph.svg) [![License: MIT](https://img.shields.io/github/license/domclick/pggraph)](https://github.com/domclick/pggraph/blob/master/LICENSE.md)
 
 Утилита для работы с зависимостями таблиц в PostgreSQL
 
