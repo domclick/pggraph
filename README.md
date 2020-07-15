@@ -1,6 +1,6 @@
 # PgGraph
 
-[![License: MIT](https://img.shields.io/github/license/domclick/pggraph)](./LICENSE.md)
+[![License: MIT](https://img.shields.io/github/license/domclick/pggraph)](https://github.com/domclick/pggraph/blob/master/LICENSE.md)
 
 Утилита для работы с зависимостями таблиц в PostgreSQL
 
@@ -9,6 +9,9 @@
 *Под архивацией понимается перенос строк в архивную таблицу (например, из "books" в "books_archive")*
 - Поиск зависимостей для указанной таблицы (ссылающиеся таблицы и таблицы на которые ссылается данная)
 - Поиск ссылок на строки с указанными Primary Key данной таблицы
+
+## Установка
+```$ pip install pggraph```
 
 ## Файл конфигурации config.ini
 Для работы утилиты нужно создать на локальной машине конфигурационный файл config.ini со следующим содержимым:
