@@ -242,8 +242,19 @@ $ pggraph get_rows_references --config_path config.hw.local.ini --table flights 
 ## Author
 - [Borzov Oleg](https://github.com/olegborzov) (Author)
 
+## Contributor Notice
+
+We are always open for contributions. Feel free to submit an issue
+or a PR. However, when submitting a PR we will ask you to sign
+our [CLA (Contributor License Agreement)][cla-text] to confirm that you
+have the rights to submit your contributions and to give us the rights
+to actually use them.
+
+When submitting a PR our special bot will ask you to review and to sign
+our [CLA][cla-text]. This will happen only once for all our GitHub repositories.
+
 ## License
 
-Copyright Ⓒ 2020 [Sberbank Real Estate Centre LLC](https://domclick.ru/).
+Copyright Ⓒ 2020 ["Sberbank Real Estate Center" Limited Liability Company](https://domclick.ru/).
 
 [MIT License](./LICENSE.md)

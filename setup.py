@@ -1,5 +1,5 @@
 """
-Copyright Ⓒ 2020 Sberbank Real Estate Centre LLC. Licensed under the MIT license.
+Copyright Ⓒ 2020 "Sberbank Real Estate Center" Limited Liability Company. Licensed under the MIT license.
 Please, see the LICENSE.md file in project's root for full licensing information.
 """
 from setuptools import setup, find_packages
@@ -17,7 +17,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     version="0.1.0",
-    author='Sberbank Real Estate Centre LLC <omborzov@domclick.ru> omborzov@domclick.ru',
+    author='"Sberbank Real Estate Center" Limited Liability Company <omborzov@domclick.ru> omborzov@domclick.ru',
     author_email='omborzov@domclick.ru',
     url='https://github.com/domclick/pggraph',
     license='MIT',
