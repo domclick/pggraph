@@ -5,8 +5,8 @@ Please, see the LICENSE.md file in project's root for full licensing information
 from configparser import ConfigParser
 from dataclasses import dataclass
 
-from pg_graph.utils.classes.base import BaseConfig
-from pg_graph.utils.funcs import arg_to_bool
+from pggraph.utils.classes.base import BaseConfig
+from pggraph.utils.funcs import arg_to_bool
 
 
 class Config:

@@ -10,8 +10,8 @@ from psycopg2._psycopg import connection
 from psycopg2.extras import execute_values, DictCursor
 from psycopg2.sql import SQL
 
-from pg_graph.config import Config
-from pg_graph.utils.classes.foreign_key import ForeignKey
+from pggraph.config import Config
+from pggraph.utils.classes.foreign_key import ForeignKey
 
 TAB_SYMBOL = '\t'
 

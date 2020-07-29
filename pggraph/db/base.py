@@ -8,7 +8,7 @@ import psycopg2
 from psycopg2._psycopg import connection
 from psycopg2.extras import DictCursor, LoggingConnection
 
-from pg_graph.config import Config
+from pggraph.config import Config
 
 
 def get_db_conn(config: Config, with_db: bool = True, with_schema: bool = False) -> connection:

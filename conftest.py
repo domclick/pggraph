@@ -4,8 +4,8 @@ Please, see the LICENSE.md file in project's root for full licensing information
 """
 import pytest
 
-from pg_graph.config import Config
-from pg_graph.db.base import get_db_conn
+from pggraph.config import Config
+from pggraph.db.base import get_db_conn
 
 
 @pytest.fixture(scope="session", autouse=True)

@@ -2,9 +2,9 @@
 Copyright Ⓒ 2020 "Sberbank Real Estate Center" Limited Liability Company. Licensed under the MIT license.
 Please, see the LICENSE.md file in project's root for full licensing information.
 """
-from pg_graph.api import PgGraphApi
-from pg_graph.db.base import get_db_conn
-from pg_graph.utils.classes.foreign_key import ForeignKey
+from pggraph.api import PgGraphApi
+from pggraph.db.base import get_db_conn
+from pggraph.utils.classes.foreign_key import ForeignKey
 
 
 def test_get_table_references():

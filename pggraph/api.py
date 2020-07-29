@@ -9,12 +9,12 @@ from typing import List, Dict
 from psycopg2.extras import DictCursor
 from psycopg2.sql import SQL
 
-from pg_graph.db import build_references as br
-from pg_graph.config import Config
-from pg_graph.db.archiver import Archiver
-from pg_graph.db.base import get_db_conn
-from pg_graph.utils.action_enum import ActionEnum
-from pg_graph.utils.funcs import chunks
+from pggraph.db import build_references as br
+from pggraph.config import Config
+from pggraph.db.archiver import Archiver
+from pggraph.db.base import get_db_conn
+from pggraph.utils.action_enum import ActionEnum
+from pggraph.utils.funcs import chunks
 
 
 class PgGraphApi:

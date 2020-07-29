@@ -139,9 +139,9 @@ $ pggraph get_rows_references --config_path config.hw.local.ini --table flights 
 ### Работа в интерактивной консоли iPython
 Архивация таблицы
 ```python
->>> from pg_graph.main import setup_logging
+>>> from pggraph.main import setup_logging
 >>> setup_logging(log_level='DEBUG')
->>> from pg_graph.api import PgGraphApi
+>>> from pggraph.api import PgGraphApi
 >>> api = PgGraphApi(config_path='config.hw.local.ini')
 >>> api.archive_table('flights', [4,5])
 2020-06-20 23:12:08 INFO: flights - START
@@ -203,7 +203,7 @@ $ pggraph get_rows_references --config_path config.hw.local.ini --table flights 
 
 Поиск зависимостей для указанной таблицы
 ```python
->>> from pg_graph.api import PgGraphApi
+>>> from pggraph.api import PgGraphApi
 >>> from pprint import pprint
 >>> api = PgGraphApi(config_path='config.hw.local.ini')
 >>> res = api.get_table_references('flights')
@@ -216,7 +216,7 @@ $ pggraph get_rows_references --config_path config.hw.local.ini --table flights 
 
 Поиск ссылок на строки с указанными Primary Key
 ```python
->>> from pg_graph.api import PgGraphApi
+>>> from pggraph.api import PgGraphApi
 >>> from pprint import pprint
 >>> api = PgGraphApi(config_path='config.hw.local.ini')
 >>> rows = api.get_rows_references('flights', [1,2,3])

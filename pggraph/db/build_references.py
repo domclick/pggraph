@@ -9,9 +9,9 @@ from typing import Set, Dict, List
 from psycopg2._psycopg import connection
 from psycopg2.extras import DictCursor
 
-from pg_graph.config import Config, DBConfig
-from pg_graph.utils.classes.foreign_key import ForeignKey
-from pg_graph.db.base import get_db_conn
+from pggraph.config import Config, DBConfig
+from pggraph.utils.classes.foreign_key import ForeignKey
+from pggraph.db.base import get_db_conn
 
 
 def build_references(config: Config, conn: connection = None) -> Dict[str, dict]:

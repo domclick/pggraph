@@ -8,8 +8,8 @@ from logging import handlers
 import os
 from pprint import pprint
 
-from pg_graph.api import PgGraphApi
-from pg_graph.utils.action_enum import ActionEnum
+from pggraph.api import PgGraphApi
+from pggraph.utils.action_enum import ActionEnum
 
 
 def main():
@@ -25,7 +25,7 @@ def main():
 def setup_logging(log_level: str = 'INFO', log_path: str = None):
     log_handlers = [logging.StreamHandler()]
     if log_path:
-        log_path = os.path.join(log_path, "pg_graph.log")
+        log_path = os.path.join(log_path, "pggraph.log")
         logging.handlers.RotatingFileHandler(log_path, maxBytes=1000000, backupCount=3, encoding="UTF-8")
 
     logging.basicConfig(handlers=log_handlers,
