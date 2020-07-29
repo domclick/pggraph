@@ -66,6 +66,9 @@ def build_references(config: Config, conn: connection = None) -> Dict[str, dict]
             references[table['table_name']] = {}
 
         for fk in foreign_keys:
+            if fk['main_table'] not in references:
+                references[fk['main_table']] = {}
+
             if not fk['ref_table'] in references[fk['main_table']]:
                 references[fk['main_table']][fk['ref_table']] = {
                     'ref_tables': {},
