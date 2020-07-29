@@ -149,18 +149,20 @@ def get_all_tables(conn, db_config: DBConfig) -> List[dict]:
 def get_all_fk(conn, db_config: DBConfig) -> List[dict]:
     query = """
         WITH contraints_columns_table AS (
-            SELECT table_name,
+            SELECT main_table_name,
+                   ref_table_name,
                    constraint_catalog,
                    constraint_schema,
                    constraint_name,
                    constraint_type,
                    string_agg(distinct column_name, ', ') as column_name
             FROM (
-              SELECT ccu_in.table_name,
+              SELECT ccu_in.table_name as main_table_name,
                      ccu_in.constraint_catalog,
                      ccu_in.constraint_schema,
                      ccu_in.constraint_name,
                      tc_in.constraint_type,
+                     kcu.table_name as ref_table_name,
                      kcu.column_name
                 FROM information_schema.constraint_column_usage ccu_in
                 INNER JOIN information_schema.table_constraints tc_in
@@ -175,10 +177,10 @@ def get_all_fk(conn, db_config: DBConfig) -> List[dict]:
               ORDER BY ccu_in.constraint_catalog, ccu_in.constraint_schema, ccu_in.constraint_name,
                        kcu.ordinal_position
             ) as subq
-            GROUP BY table_name, constraint_catalog, constraint_schema, constraint_name, constraint_type
+            GROUP BY main_table_name, ref_table_name, constraint_catalog, constraint_schema, constraint_name, constraint_type
         )
         SELECT
-            ccu.table_name AS main_table,
+            ccu.main_table_name AS main_table,
             ccu.column_name AS main_table_column,
             tc.table_name AS ref_table,
             pk_table.column_name AS ref_pk_columns,
@@ -188,12 +190,12 @@ def get_all_fk(conn, db_config: DBConfig) -> List[dict]:
         
         LEFT JOIN (
             select ccu_in.constraint_catalog, ccu_in.constraint_schema, ccu_in.constraint_name,
-                   cct.table_name, cct.column_name
+                   cct.main_table_name, cct.column_name
             FROM contraints_columns_table cct
             INNER JOIN information_schema.constraint_column_usage ccu_in
                 ON ccu_in.table_catalog = cct.constraint_catalog
                 AND ccu_in.table_schema = cct.constraint_schema
-                AND ccu_in.table_name = cct.table_name
+                AND ccu_in.table_name = cct.main_table_name
             WHERE lower(cct.constraint_type) in ('primary key')
         ) ccu ON tc.constraint_catalog = ccu.constraint_catalog
             AND tc.constraint_schema = ccu.constraint_schema
@@ -205,15 +207,18 @@ def get_all_fk(conn, db_config: DBConfig) -> List[dict]:
         ) kcu ON tc.constraint_catalog = kcu.constraint_catalog
             AND tc.constraint_schema = kcu.constraint_schema
             AND tc.constraint_name = kcu.constraint_name
+            AND tc.table_name = kcu.ref_table_name
         
         LEFT JOIN (
             select * FROM contraints_columns_table cct
             WHERE lower(cct.constraint_type) in ('primary key')
-        ) pk_table ON pk_table.table_name = tc.table_name
+        ) pk_table ON pk_table.main_table_name = tc.table_name
         
-        WHERE lower(tc.constraint_type) in ('foreign key') AND tc.constraint_schema = %(schema)s
-        GROUP BY ccu.table_name, ccu.column_name, pk_table.column_name, tc.table_name, kcu.column_name
-        ORDER BY ccu.table_name, tc.table_name;
+        WHERE lower(tc.constraint_type) in ('foreign key') 
+            AND tc.constraint_schema = %(schema)s 
+            AND ccu.main_table_name is not null
+        GROUP BY ccu.main_table_name, ccu.column_name, pk_table.column_name, tc.table_name, kcu.column_name
+        ORDER BY ccu.main_table_name, tc.table_name;
     """
 
     with conn.cursor(cursor_factory=DictCursor) as curs:
