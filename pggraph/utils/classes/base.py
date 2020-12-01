@@ -19,6 +19,26 @@ class BaseConfig:
                 if hasattr(cls, field):
                     fields[field] = getattr(cls, field)
                 else:
-                    raise KeyError(f'{field} not found in config')
+                    raise KeyError(f'{field} is required')
+
+        return cls(**fields)
+
+    @classmethod
+    def from_dict(cls, config_data: dict):
+        fields = {}
+        for field, field_type in cls.__annotations__.items():
+            if field in config_data:
+                value = config_data.get(field)
+            elif hasattr(cls, field):
+                value = getattr(cls, field)
+            else:
+                raise KeyError(f'{field} is required')
+
+            if not isinstance(value, field_type):
+                value_type = value.__class__.__name__
+                correct_type = field_type.__name__
+                raise ValueError(f'{field} value has incorrect type {value_type}, correct type - {correct_type}')
+
+            fields[field] = value
 
         return cls(**fields)

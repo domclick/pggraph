@@ -13,11 +13,30 @@ class Config:
     db_config: "DBConfig"
     archiver_config: "ArchiverConfig"
 
-    def __init__(self, config_path):
+    def __init__(self, config_path: str = None, config_data: dict = None):
+        if config_data:
+            self.from_dict(config_data)
+        elif config_path:
+            self.from_ini(config_path)
+        else:
+            raise ValueError('config_path or config_data should be set')
+
+    def from_ini(self, config_path: str):
         config = ConfigParser()
         config.read(config_path)
         self.db_config = DBConfig.from_config(config, 'db')
         self.archiver_config = ArchiverConfig.from_config(config, 'archive')
+
+    def from_dict(self, config_data: dict):
+        if not isinstance(config_data, dict):
+            raise ValueError(f'config_data has incorrect type {config_data.__class__.__name__} (should be dict)')
+
+        if 'db' in config_data:
+            self.db_config = DBConfig.from_dict(config_data['db'])
+        else:
+            raise KeyError('config_data should contain db settings')
+
+        self.archiver_config = ArchiverConfig.from_dict(config_data.get('archive', {}))
 
 
 @dataclass
