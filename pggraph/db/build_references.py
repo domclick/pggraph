@@ -52,15 +52,14 @@ def build_references(config: Config, conn: connection = None) -> Dict[str, dict]
     }
     """
 
-    references = {}
-    primary_keys = {}
-
     if not conn:
         conn = get_db_conn(config)
 
     try:
+        references = {}
         tables = get_all_tables(conn, config.db_config)
         foreign_keys = get_all_fk(conn, config.db_config)
+        primary_keys = get_all_pk(conn, config.db_config)
 
         for table in tables:
             references[table['table_name']] = {}
@@ -81,8 +80,6 @@ def build_references(config: Config, conn: connection = None) -> Dict[str, dict]
                 pk_ref=fk['ref_pk_columns'],
                 fk_ref=fk['ref_fk_column'],
             ))
-
-            primary_keys[fk['main_table']] = fk['main_table_column']
 
         if references:
             references = OrderedDict(sorted(references.items(), key=lambda row: len(row[1]), reverse=True))
@@ -227,3 +224,22 @@ def get_all_fk(conn, db_config: DBConfig) -> List[dict]:
 
     foreign_keys = [dict(row) for row in result]
     return foreign_keys
+
+
+def get_all_pk(conn, db_config: DBConfig) -> Dict[str, str]:
+    query = """
+        select kcu.table_name as table_name, string_agg(distinct kcu.column_name, ', ') as column_names
+        from information_schema.key_column_usage kcu
+        INNER JOIN information_schema.table_constraints tc_in
+          ON tc_in.constraint_name = kcu.constraint_name
+              AND tc_in.constraint_schema = kcu.constraint_schema
+              AND tc_in.constraint_catalog = kcu.constraint_catalog
+        where tc_in.constraint_type = 'PRIMARY KEY' AND tc_in.table_schema = %(schema)s
+        group by kcu.table_name, kcu.constraint_catalog, kcu.constraint_schema, kcu.constraint_name;
+    """
+    with conn.cursor(cursor_factory=DictCursor) as curs:
+        curs.execute(query.strip(), {'schema': db_config.schema})
+        result = curs.fetchall()
+
+    primary_keys = [dict(row) for row in result]
+    return {row['table_name']: row['column_names'] for row in primary_keys}
