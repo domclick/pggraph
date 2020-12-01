@@ -44,5 +44,5 @@ class ArchiverConfig(BaseConfig):
         conf.is_debug = arg_to_bool(str(conf.is_debug), default_value=cls.is_debug)
         conf.chunk_size = int(conf.chunk_size)
         conf.max_depth = int(conf.max_depth)
-        conf.to_archive = arg_to_bool(str(conf.to_archive), default_value=cls.is_debug)
+        conf.to_archive = arg_to_bool(str(conf.to_archive), default_value=cls.to_archive)
         return conf
