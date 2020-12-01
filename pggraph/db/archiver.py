@@ -173,7 +173,7 @@ class Archiver:
 
         logging.debug(f"{tabs}INSERT INTO {archive_table_name} - {len(values)} rows")
         with self.conn.cursor(cursor_factory=DictCursor) as cursor:
-            execute_values(cursor, query, values)
+            execute_values(cursor, query.as_string(cursor), values)
 
     def delete_rows_by_fk(self, cursor, table_name: str, fk: ForeignKey, fk_rows: List, tabs: str):
         pk_cols = fk.pk_main.split(', ')
