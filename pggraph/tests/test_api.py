@@ -2,6 +2,8 @@
 Copyright Ⓒ 2020 "Sberbank Real Estate Center" Limited Liability Company. Licensed under the MIT license.
 Please, see the LICENSE.md file in project's root for full licensing information.
 """
+from unittest.mock import ANY
+
 from pggraph.api import PgGraphApi
 from pggraph.db.base import get_db_conn
 from pggraph.utils.classes.foreign_key import ForeignKey
@@ -12,15 +14,18 @@ def test_get_table_references():
 
     publisher_refs = api.get_table_references('publisher')
     assert publisher_refs == {
-        'in_refs': {'book': [ForeignKey(pk_main='id', pk_ref='id', fk_ref='publisher_id')]}, 'out_refs': {}
+        'in_refs': {
+            'book': [ForeignKey(pk_main='id', pk_ref='id', fk_ref='publisher_id', fk_name=ANY)]
+        },
+        'out_refs': {}
     }
 
     author_book_refs = api.get_table_references('author_book')
     assert author_book_refs == {
         'in_refs': {},
         'out_refs': {
-            'book': [ForeignKey(pk_main='id', pk_ref='author_id, book_id', fk_ref='book_id')],
-            'author': [ForeignKey(pk_main='id', pk_ref='author_id, book_id', fk_ref='author_id')]
+            'book': [ForeignKey(pk_main='id', pk_ref='author_id, book_id', fk_ref='book_id', fk_name=ANY)],
+            'author': [ForeignKey(pk_main='id', pk_ref='author_id, book_id', fk_ref='author_id', fk_name=ANY)]
         }
     }
 

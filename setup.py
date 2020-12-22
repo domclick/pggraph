@@ -16,7 +16,7 @@ setup(
     description="Утилита для работы с зависимостями таблиц в PostgreSQL",
     long_description=long_description,
     long_description_content_type='text/markdown',
-    version="0.1.5",
+    version="0.1.6",
     author='"Sberbank Real Estate Center" Limited Liability Company <omborzov@domclick.ru> omborzov@domclick.ru',
     author_email='omborzov@domclick.ru',
     url='https://github.com/domclick/pggraph',

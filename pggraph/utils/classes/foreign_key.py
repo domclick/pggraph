@@ -10,3 +10,5 @@ class ForeignKey:
     pk_main: str    # Primary Key
     pk_ref: str     # referring table Primary Key
     fk_ref: str     # referring table Foreign Key
+    fk_name: str  # foreign key name
+

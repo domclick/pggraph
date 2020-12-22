@@ -26,7 +26,9 @@ def setup_logging(log_level: str = 'INFO', log_path: str = None):
     log_handlers = [logging.StreamHandler()]
     if log_path:
         log_path = os.path.join(log_path, "pggraph.log")
-        logging.handlers.RotatingFileHandler(log_path, maxBytes=1000000, backupCount=3, encoding="UTF-8")
+        log_handlers.append(
+            logging.handlers.RotatingFileHandler(log_path, maxBytes=1000000, backupCount=3, encoding="UTF-8")
+        )
 
     logging.basicConfig(handlers=log_handlers,
                         level=log_level or logging.INFO,

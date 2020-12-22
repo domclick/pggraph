@@ -105,7 +105,8 @@ class Archiver:
                 archive_table_name = self.create_archive_table(table_name, tabs=tabs)
 
             with self.conn.cursor(cursor_factory=DictCursor) as cursor:
-                self.delete_rows_by_fk(cursor, table_name=table_name, fk=fk, fk_rows=fk_rows, tabs=tabs)
+                self.select_rows_by_fk(cursor, table_name, fk=fk, rows=fk_rows, tabs=tabs, for_update=True)
+                self.delete_rows_by_fk(cursor, table_name, fk=fk, fk_rows=fk_rows, tabs=tabs)
 
                 if self.config.archiver_config.to_archive:
                     rows_chunk = cursor.fetchmany(size=self.config.archiver_config.chunk_size)
@@ -136,7 +137,8 @@ class Archiver:
                 archive_table_name = self.create_archive_table(table_name, tabs=tabs)
 
             with self.conn.cursor(cursor_factory=DictCursor) as cursor:
-                self.delete_rows_by_ids(cursor, table_name=table_name, pk_columns=pk_columns, rows=row_pks, tabs=tabs)
+                self.select_rows_for_update(cursor, table_name, pk_columns=pk_columns, rows=row_pks, tabs=tabs)
+                self.delete_rows_by_ids(cursor, table_name, pk_columns=pk_columns, rows=row_pks, tabs=tabs)
 
                 if self.config.archiver_config.to_archive:
                     rows_chunk = cursor.fetchmany(size=self.config.archiver_config.chunk_size)
@@ -200,15 +202,28 @@ class Archiver:
         logging.debug(f"{tabs}DELETE FROM {table_name} by {pk_columns} - {len(rows)} rows")
         cursor.execute(query, row_ids)
 
-    def select_rows_by_fk(self, cursor, table_name: str, fk: ForeignKey, rows: List[dict], tabs: str):
+    def select_rows_by_fk(self, cursor, table_name: str, fk: ForeignKey, rows: List[dict], tabs: str, for_update: bool = False):
         pk_cols = fk.pk_main.split(', ')
         row_ids = [tuple(row[pk] for pk in pk_cols) for row in rows]
         in_s = ', '.join('%s' for _ in range(len(rows)))
 
+        query = f"SELECT {fk.pk_ref} FROM {self.config.db_config.schema}.{table_name} WHERE ({fk.fk_ref}) IN ({in_s})"
+        if for_update:
+            query += f" FOR UPDATE"
+        query = SQL(query)
+
+        logging.debug(f"{tabs}{query}"[:1000])
+        cursor.execute(query, row_ids)
+
+    def select_rows_for_update(self, cursor, table_name: str, pk_columns: str, rows: List[dict], tabs: str):
+        pk_cols = [pk.strip() for pk in pk_columns.split(',')]
+        row_ids = [tuple(row[pk] for pk in pk_cols) for row in rows]
+        in_s = ', '.join('%s' for _ in range(len(rows)))
+
         query = SQL(
-            f"SELECT {fk.pk_ref} FROM {self.config.db_config.schema}.{table_name} "
-            f"WHERE ({fk.fk_ref}) IN ({in_s})"
+            f"SELECT {pk_columns} FROM {self.config.db_config.schema}.{table_name} "
+            f"WHERE ({pk_columns}) IN ({in_s}) FOR UPDATE"
         )
 
-        logging.debug(f"{tabs}{query}"[:100])
+        logging.debug(f"{tabs}SELECT {pk_columns} FROM {table_name} FOR UPDATE by {pk_columns} - {len(rows)} rows")
         cursor.execute(query, row_ids)

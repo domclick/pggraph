@@ -79,6 +79,7 @@ def build_references(config: Config, conn: connection = None) -> Dict[str, dict]
                 pk_main=fk['main_table_column'],
                 pk_ref=fk['ref_pk_columns'],
                 fk_ref=fk['ref_fk_column'],
+                fk_name=fk['constraint_name'],
             ))
 
         if references:
@@ -181,7 +182,8 @@ def get_all_fk(conn, db_config: DBConfig) -> List[dict]:
             ccu.column_name AS main_table_column,
             tc.table_name AS ref_table,
             pk_table.column_name AS ref_pk_columns,
-            kcu.column_name AS ref_fk_column
+            kcu.column_name AS ref_fk_column,
+            ccu.constraint_name as constraint_name
         
         FROM information_schema.table_constraints tc
         
@@ -214,7 +216,7 @@ def get_all_fk(conn, db_config: DBConfig) -> List[dict]:
         WHERE lower(tc.constraint_type) in ('foreign key') 
             AND tc.constraint_schema = %(schema)s 
             AND ccu.main_table_name is not null
-        GROUP BY ccu.main_table_name, ccu.column_name, pk_table.column_name, tc.table_name, kcu.column_name
+        GROUP BY ccu.main_table_name, ccu.column_name, pk_table.column_name, tc.table_name, kcu.column_name, ccu.constraint_name
         ORDER BY ccu.main_table_name, tc.table_name;
     """
 
