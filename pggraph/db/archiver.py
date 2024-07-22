@@ -172,6 +172,8 @@ class Archiver:
             for col_name, col_val in row.items():
                 if isinstance(col_val, dict):
                     row[col_name] = Json(col_val)
+                if isinstance(col_val, list) and col_val and isinstance(col_val[0], dict):
+                    row[col_name] = Json(col_val)
 
         logging.debug(f"{tabs}INSERT INTO {archive_table_name} - {len(values)} rows")
         with self.conn.cursor(cursor_factory=DictCursor) as cursor:
